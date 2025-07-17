@@ -15,6 +15,16 @@ let keys = {};
 let score = 0;
 let gameOver = false;
 
+const starCount = 100;
+let stars = [];
+for (let i = 0; i < starCount; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    speed: 1 + Math.random() * 2
+  });
+}
+
 function updateScore() {
   document.getElementById('score').textContent = `Score: ${score}` + (gameOver ? ' GAME OVER' : '');
 }
@@ -56,6 +66,14 @@ function isColliding(a, b) {
 let lastEnemySpawn = 0;
 function update() {
   if (gameOver) return;
+
+  stars.forEach(star => {
+    star.y += star.speed;
+    if (star.y > canvas.height) {
+      star.y = 0;
+      star.x = Math.random() * canvas.width;
+    }
+  });
 
   if (keys['ArrowLeft'] || keys['KeyA']) {
     player.x -= player.speed;
@@ -104,6 +122,8 @@ function update() {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#fff';
+  stars.forEach(star => ctx.fillRect(star.x, star.y, 2, 2));
   ctx.fillStyle = '#0ff';
   ctx.fillRect(player.x, player.y, player.width, player.height);
 
